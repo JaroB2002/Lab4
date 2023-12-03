@@ -49,7 +49,7 @@ app.get('/api/v1/messages/:id', (req, res) => {
             data: message,
         });
     } else {
-        res.json({
+        res.status(404).json({
             status: 'error',
             message: 'Message not found',
         });
@@ -81,6 +81,43 @@ app.post('/api/v1/messages', (req, res) => {
     }
 });
 
+app.put('/api/v1/messages/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const index = messages.findIndex(msg => msg.id === id);
+
+    if (index !== -1) {
+        messages[index].message = req.body.message || '';
+        res.json({
+            status: 'success',
+            message: `UPDATING a message with ID ${id}`,
+            data: messages[index],
+        });
+    } else {
+        res.status(404).json({
+            status: 'error',
+            message: `Message with ID ${id} not found`,
+        });
+    }
+});
+
+app.delete('/api/v1/messages/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const index = messages.findIndex(msg => msg.id === id);
+
+    if (index !== -1) {
+        const deletedMessage = messages.splice(index, 1)[0];
+        res.json({
+            status: 'success',
+            message: `DELETING a message with ID ${id}`,
+            data: deletedMessage,
+        });
+    } else {
+        res.status(404).json({
+            status: 'error',
+            message: `Message with ID ${id} not found`,
+        });
+    }
+});
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
