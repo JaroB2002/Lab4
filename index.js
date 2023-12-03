@@ -8,10 +8,12 @@ app.use(express.json());
 
 const messages = [
     {
+        id: 1,
         user: 'John',
         message: 'Hello',
     },
     {
+        id: 2,
         user: 'Doe',
         message: 'World',
     },
@@ -59,6 +61,7 @@ app.post('/api/v1/messages', (req, res) => {
 
     if (user) {
         const newMessage = {
+            id: messages.length + 1,
             user,
             message: req.body.message || '',
         };
