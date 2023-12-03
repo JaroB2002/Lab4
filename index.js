@@ -74,12 +74,13 @@ app.post('/api/v1/messages', (req, res) => {
             data: newMessage,
         });
     } else {
-        res.json({
+        res.status(400).json({
             status: 'error',
             message: 'POST FAILED: User not provided',
         });
     }
 });
+
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
