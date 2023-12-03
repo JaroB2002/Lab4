@@ -7,50 +7,69 @@ app.use(express.json()); // built-in express.json() middleware to parse JSON dat
 
 app.get('/api/v1/messages', (req, res) => {
   const user = req.query.user;
-  res.json(messages);
-  if(user){
+  if (user) {
     res.json({
-        status: 'success',
-        message: `User ${user} found`,
-        });
-    } else {
-        res.json({
-            status: 'succes',
-            message: 'GET messages',
-            data: [
-                {
-                    user: 'John',
-                    message: 'Hello',
-                },
-                {
-                    user: 'Doe',
-                    message: 'World',
-                },
-            ],
-        });
+      status: "success",
+      message: `GET messages for user ${user}`,
+    });
+  } else {
+    res.json({
+      status: "success",
+      message: "GET messages",
+      data: [
+        {
+          user: "Sarah",
+          message: "Hi",
+        },
+        {
+          user: "Lisa",
+          message: "Hello",
+        },
+      ],
+    });
   }
 });
 
 app.get('/api/v1/messages/:id', (req, res) => {
-    const id = parseInt(req.params.id);
+  const id = parseInt(req.params.id);
     res.json({
-        status: 'success',
-        message: `GET message with id ${id}`,
+      status: "success",
+      message: `GETTING message with ID ${id}`,
     });
-    });
+});
 
 app.post('/api/v1/messages', (req, res) => {
-    const user = req.body.user;
-    if(user){
-        res.json({
-            status: 'success',
-            message: `User ${user} added`,
-        });
+  const user = req.body.message.user;
+  
+  if (user) {
+    res.json({
+      status: "success",
+      message: `POSTING a new message for user ${user}`,
+    });
+  } else {
+    res.status(400).json({
+      status: "error",
+      message: "Post failed",
+    });
+  }
+});
 
-    } else {
-        res.json({
-            status: 'error',
-            message: 'POST FAILED',
-        });
-    }
+app.put('/api/v1/messages/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  res.json({
+    status: "success",
+    message: `UPDATING a message with ID ${id}`,
+  });
+});
+
+app.delete('/api/v1/messages/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+    res.json({
+      status: "success",
+      message: `DELETING a message with ID ${id}`,
+  });
+});
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
 });
