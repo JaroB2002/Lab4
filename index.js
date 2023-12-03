@@ -6,24 +6,51 @@ app.use(cors());
 app.use(express.json()); // built-in express.json() middleware to parse JSON data
 
 app.get('/api/v1/messages', (req, res) => {
-  res.json(messages);
   const user = req.query.user;
+  res.json(messages);
   if(user){
     res.json({
         status: 'success',
-        data: {
-            message: `User ${user} found`,
-        
+        message: `User ${user} found`,
         });
     } else {
         res.json({
             status: 'succes',
             message: 'GET messages',
-            data: {
-                messages: messages
-            }
+            data: [
+                {
+                    user: 'John',
+                    message: 'Hello',
+                },
+                {
+                    user: 'Doe',
+                    message: 'World',
+                },
+            ],
+        });
+  }
+});
+
+app.get('/api/v1/messages/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    res.json({
+        status: 'success',
+        message: `GET message with id ${id}`,
+    });
+    });
+
+app.post('/api/v1/messages', (req, res) => {
+    const user = req.body.user;
+    if(user){
+        res.json({
+            status: 'success',
+            message: `User ${user} added`,
+        });
+
+    } else {
+        res.json({
+            status: 'error',
+            message: 'POST FAILED',
         });
     }
-    
-  }
 });
