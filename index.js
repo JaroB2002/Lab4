@@ -2,74 +2,82 @@ const express = require('express');
 const app = express();
 const port = 3000;
 const cors = require("cors");
+
 app.use(cors());
-app.use(express.json()); // built-in express.json() middleware to parse JSON data
+app.use(express.json());
+
+const messages = [
+    {
+        user: 'John',
+        message: 'Hello',
+    },
+    {
+        user: 'Doe',
+        message: 'World',
+    },
+];
 
 app.get('/api/v1/messages', (req, res) => {
-  const user = req.query.user;
-  if (user) {
-    res.json({
-      status: "success",
-      message: `GET messages for user ${user}`,
-    });
-  } else {
-    res.json({
-      status: "success",
-      message: "GET messages",
-      data: [
-        {
-          user: "John Doe",
-          message: "Hello World",
-        },
-        {
-          user: "Jaro Brichau",
-          message: "World Hello",
-        },
-      ],
-    });
-  }
+    const user = req.query.user;
+
+    if (user) {
+        const foundUserMessages = messages.filter(msg => msg.user === user);
+        res.json({
+            status: 'success',
+            message: `Messages for user ${user} found`,
+            data: foundUserMessages,
+        });
+    } else {
+        res.json({
+            status: 'success',
+            message: 'GET messages',
+            data: messages,
+        });
+    }
 });
 
 app.get('/api/v1/messages/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-    res.json({
-      status: "success",
-      message: `GETTING message with ID ${id}`,
-    });
+    const id = parseInt(req.params.id);
+    const message = messages.find(msg => msg.id === id);
+
+    if (message) {
+        res.json({
+            status: 'success',
+            message: `GET message with id ${id}`,
+            data: message,
+        });
+    } else {
+        res.json({
+            status: 'error',
+            message: 'Message not found',
+        });
+    }
 });
 
 app.post('/api/v1/messages', (req, res) => {
-  const user = req.body.message.user;
-  
-  if (user) {
-    res.json({
-      status: "success",
-      message: `POSTING a new message for user ${user}`,
-    });
-  } else {
-    res.status(400).json({
-      status: "error",
-      message: "Post failed",
-    });
-  }
-});
+    const user = req.body.user;
 
-app.put('/api/v1/messages/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  res.json({
-    status: "success",
-    message: `UPDATING a message with ID ${id}`,
-  });
-});
+    if (user) {
+        const newMessage = {
+            user,
+            message: req.body.message || '',
+        };
 
-app.delete('/api/v1/messages/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-    res.json({
-      status: "success",
-      message: `DELETING a message with ID ${id}`,
-  });
+        messages.push(newMessage);
+
+        res.json({
+            status: 'success',
+            message: `Message from ${user} added`,
+            data: newMessage,
+        });
+    } else {
+        res.json({
+            status: 'error',
+            message: 'POST FAILED: User not provided',
+        });
+    }
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+    console.log(`Server is running on port ${port}`);
 });
